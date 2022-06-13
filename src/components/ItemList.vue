@@ -3,31 +3,40 @@
     <div class="container">
 
       <div class="flex-positioner">
-        <div class="side-bar">
-          <h1 class="side-bar__header">Filter</h1>
+<!--        <div class="side-bar">-->
+<!--          <h1 class="side-bar__header">Список</h1>-->
 
-          <ul class="side-bar__list">
-            <li><input type="checkbox" @change="sushiCategory = !sushiCategory">  Sushi</li>
-            <li><input type="checkbox" @change="burgerCategory = !burgerCategory">  Burgers</li>
-            <li><input type="checkbox" @change="pizzaCategory = !pizzaCategory">  Pizzas</li>
-            <li><input type="checkbox" @change="dessertsCategory = !dessertsCategory">  Desserts</li>
-            <li><input type="checkbox" @change="frozenMealCategory = !frozenMealCategory">  Frozen Meals</li>
-            <li><input type="checkbox" @change="pastryCategory = !pastryCategory">  Pastry</li>
-          </ul>
-        </div>
+<!--          <ul class="side-bar__list">-->
+<!--            <li v-for="(offense, index) in offenses"-->
+<!--                :key="index"-->
+<!--            >-->
+<!--              <OffenseCard-->
+<!--                  :title_criminal="offense.title_criminal"-->
+<!--              />-->
+<!--            </li>-->
+<!--          </ul>-->
+<!--        </div>-->
 
         <div class="products" >
-          <ItemEmptyList id="empty-item"/>
+          <ItemEmptyList v-if="emptyBlockVis" id="empty-item"/>
           <ul class="item-list">
-            <li v-for="product in products" :key="product">
-              <ItemCard
-              :id="product.Id"
-              :img="product.Img"
-              :price="product.Price"
-              :productTypeName="product.Prod_type_name"
-              :productName="product.Product_name"
-
-              @addProductToBasket="addProductToBasket"
+            <li v-for="(offense, index) in offenses"
+                :key="index"
+            >
+              <OffenseCard
+                  :id="offense.id"
+                  :latitude="offense.latitude"
+                  :longitude="offense.longitude"
+                  :crime_code_id="offense.crime_code_id"
+                  :title_criminal="offense.title_criminal"
+                  :number_criminal="offense.number_criminal"
+                  :user_id="offense.user_id"
+                  :first_name="offense.first_name"
+                  :second_name="offense.second_name"
+                  :patronymic="offense.patronymic"
+                  :phone_number="offense.phone_number"
+                  :description="offense.description"
+                  :time="offense.time"
               />
             </li>
           </ul>
@@ -40,17 +49,21 @@
 
 <script>
 import ItemEmptyList from "@/components/ItemEmptyList";
-import ItemCard from "@/components/ItemCard";
+// import ItemCard from "@/components/ItemCard";
+import OffenseCard from "@/components/OffenseCard"
 
 export default {
   name: "ProductItem",
   components: {
     ItemEmptyList,
-    ItemCard
+    // ItemCard,
+    OffenseCard
   },
   data() {
     return {
       products: [],
+      offenses: [],
+      emptyBlockVis: true,
       sushiCategory: false,
       burgerCategory: false,
       pizzaCategory: false,
@@ -61,6 +74,14 @@ export default {
     }
   },
   methods: {
+    async getAllOffensesList () {
+      await this.$store.dispatch('getAllUserOffensesByUserId', {userId: localStorage.getItem("user_id")})
+      this.offenses = this.$store.getters.getAllOffenses
+      if (this.offenses.length > 0) {
+        this.emptyBlockVis = false
+      }
+    },
+
     async updateProductsByName (category) {
       await this.$store.dispatch('getProductsByCategory', {categoryName: category, products: []})
       this.products = this.$store.getters.getAllProducts
@@ -97,15 +118,20 @@ export default {
       localStorage.setItem("Basket", JSON.stringify(storage))
     }
   },
-    watch: {
-      products() {
-        let emptyBlock =  document.getElementById("empty-item")
-        if (this.products.length == 0) {
-          emptyBlock.style.display = "block"
-        } else {
-          emptyBlock.style.display = "none"
-        }
-      },
+
+  mounted() {
+    this.getAllOffensesList()
+  },
+
+  watch: {
+      // products() {
+      //   let emptyBlock =  document.getElementById("empty-item")
+      //   if (this.offenses.length == 0) {
+      //     emptyBlock.style.display = "block"
+      //   } else {
+      //     emptyBlock.style.display = "none"
+      //   }
+      // },
 
       sushiCategory(newValue) {
         if (newValue === true) {
@@ -234,7 +260,7 @@ export default {
   }
 
   .products {
-    max-width: 900px;
+    max-width: 1180px;
   }
 
   .item-list {

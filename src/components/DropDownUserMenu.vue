@@ -1,10 +1,10 @@
 <template>
     <div class="drop-menu">
       <ul @mouseover="closeDropDownAction('keep-alive')" @mouseleave="closeDropDownAction('close')" class="drop-menu__list">
-        <li @click="this.$emit('userOrdersListAction')" class="drop-menu__list_li">
-          <img src="../assets/history_icon.png" alt="#">
-          <p class="wtf-p">My Orders</p>
-        </li>
+<!--        <li @click="this.$emit('userOrdersListAction')" class="drop-menu__list_li">-->
+<!--          <img src="../assets/history_icon.png" alt="#">-->
+<!--          <p class="wtf-p">My Orders</p>-->
+<!--        </li>-->
         <li @click="this.$emit('logOutUser')" class="drop-menu__list_li">
           <img class="wtf-img" src="../assets/logout_icon.png" alt="#">
           <p>Log Out</p>
@@ -43,8 +43,8 @@ export default {
   .drop-menu {
     position: relative;
     top: 75px;
-    left: 670px;
-    height: 81px;
+    left: 410px;
+    height: 41px;
     width: 160px;
     border: 1px solid black;
     border-radius: 7px;

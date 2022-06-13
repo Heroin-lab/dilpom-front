@@ -8,6 +8,7 @@ import orderFunctions from "@/store/orderFunctions";
 
 const store = createStore({
     state: {
+        offensesList: [],
         categories: [],
         allProductsObjs: {},
         productContainer: [],
@@ -28,6 +29,10 @@ const store = createStore({
             return preparedArray
         },
 
+        getAllOffenses (state) {
+            return JSON.parse(JSON.stringify(state.offensesList.data))
+        },
+
         getUserAuthStatus (state) {
             return JSON.parse(JSON.stringify(state.userAuthStatus))
         },
@@ -45,6 +50,10 @@ const store = createStore({
         }
     },
     mutations: {
+        ADD_OFFENSES_TO_LIST (state, payload) {
+            state.offensesList = payload.offenses
+        },
+
         ADD_USER_PREVIOUS_ORDERS (state, payload) {
           state.userPreviousOrders = payload
         },
@@ -96,6 +105,17 @@ const store = createStore({
         }
     },
     actions: {
+        async getAllUserOffensesByUserId({ commit }, payload) {
+            let userId = payload.userId
+
+            try {
+                const response = await productFunctions.loadUserOffenses(userId)
+                await commit('ADD_OFFENSES_TO_LIST', {offenses: response})
+            } catch (error) {
+                console.log(error)
+            }
+        },
+
         async getProductsByCategory({ commit, state }, payload) {
             if (payload.categoryName in state.allProductsObjs) {
                 commit('ADD_EXIST_PRODUCT_LIST', payload.categoryName)
@@ -112,10 +132,10 @@ const store = createStore({
 
         async doLogin ({ commit }, payload) {
             try {
-                const loginResp = await authFunctions.loginUser(payload.userEmail, payload.userPassword)
+                const loginResp = await authFunctions.loginUser(payload.userPhoneNumber, payload.userPassword)
                 if (loginResp.status === 200) {
                     let readyJson = await loginResp.json()
-                    localStorage.setItem("user_id", readyJson.user_id)
+                    localStorage.setItem("user_id", readyJson.id)
                     localStorage.setItem("access_token", readyJson.access_token)
                     localStorage.setItem("refresh_token", readyJson.refresh_token)
                     localStorage.setItem("user_login_status", true)
@@ -128,7 +148,7 @@ const store = createStore({
 
         async doRegister (commit, payload) {
             try {
-                await authFunctions.registerUser(payload.userEmail, payload.userPassword)
+                await authFunctions.registerUser(payload.userPhoneNumber, payload.name, payload.secName, payload.prima, payload.userPassword)
             } catch (error) {
                 console.log(error)
             }

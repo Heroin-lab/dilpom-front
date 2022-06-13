@@ -12,4 +12,16 @@ const loadProducts = async (category) => {
     return await response.json()
 }
 
-export default {loadProducts}
+const loadUserOffenses = async (userId) => {
+    let response = await fetch("http://localhost:7777/api/offenses?user_id="+userId,{
+        mode: "cors",
+        method: "GET",
+        headers: {
+            "Accept":"*/*",
+        },
+    })
+
+    return await response.json()
+}
+
+export default {loadProducts, loadUserOffenses}

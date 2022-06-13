@@ -2,16 +2,19 @@
  <div @click="closePopUp" class="auth-popup">
    <div class="auth-popup__form" id="popup-form">
      <span @click="closePopUp" class="auth-popup__cross">+</span>
-     <h2 id="form-header">Sign In</h2>
-     <input id="email" placeholder="Email" type="email">
-     <input id="password" placeholder="Password" type="password">
-     <input class="auth-popup__form_confirm-pass" id="confirm-password" placeholder="Confirm password" type="password">
-     <a class="auth-popup__form_forgot-pass" id="forgot-pass" href="#">Forgot password?</a>
-     <button @click="authValidator" id="main-btn" value="Login">Login</button>
+     <h2 id="form-header">Вхід</h2>
+     <input id="phoneNumber" placeholder="Номер телефону">
+     <input v-if="regMode" id="firstName" placeholder="Ім'я">
+     <input v-if="regMode" id="secondName" placeholder="Призвище">
+     <input v-if="regMode" id="patronymic" placeholder="По батькові">
+     <input id="password" placeholder="Пароль" type="password">
+     <input class="auth-popup__form_confirm-pass" id="confirm-password" placeholder="підтвердити пароль" type="password">
+     <a class="auth-popup__form_forgot-pass" id="forgot-pass" href="#">Забув пароль?</a>
+     <button @click="authValidator" id="main-btn" value="Login">Увійти</button>
 
      <div class="auth-popup__form_footer">
        <h6 id="alert-msg"></h6>
-       <span id="prefixMsg">Dont have an account?</span> <a id="hrefMsg" @click="changeAuthMode" href="#">Sign Up</a>
+       <span id="prefixMsg">Не має обліковогу запису?</span> <a id="hrefMsg" @click="changeAuthMode" href="#">Реєстрація</a>
        <p>{{ authStatus }}</p>
      </div>
    </div>
@@ -23,7 +26,8 @@ export default {
   name: "AuthPopUpWindow",
   data () {
     return {
-      authStatus: false
+      authStatus: false,
+      regMode: false,
     }
   },
 
@@ -48,21 +52,24 @@ export default {
       let hrefMsg = document.getElementById("hrefMsg")
 
 
+
       if (mainButton.value === "Login") {
-        formHeader.innerText = "Registration"
-        mainButton.innerText = "Sign Up"
+        this.regMode = true
+        formHeader.innerText = "Реєстрація"
+        mainButton.innerText = "Зареєструватись"
         mainButton.value = "Sign Up"
         mainButton.style.backgroundColor = "#00bcff"
-        popupForm.style.height = "550px"
-        prefixMsg.innerText = "Already have an account?"
-        hrefMsg.innerText = "Sign In"
+        popupForm.style.height = "690px"
+        prefixMsg.innerText = "Вже є обліковий запис?"
+        hrefMsg.innerText = "Увійти"
 
         forgotPassHref.style.display = "none"
         confirmInput.style.display = "block"
 
       } else {
-        formHeader.innerText = "Sign In"
-        mainButton.innerText = "Login"
+        this.regMode = false
+        formHeader.innerText = "Вхід"
+        mainButton.innerText = "Увійти"
         mainButton.value = "Login"
         mainButton.style.backgroundColor = "#ff004e"
         popupForm.style.height = "500px"
@@ -80,41 +87,40 @@ export default {
     },
 
     authValidator () {
-      let emailInput = document.getElementById("email").value
-      let passInput = document.getElementById("password").value
-      let confirmPassInput = document.getElementById("confirm-password").value
-      let mainButton = document.getElementById("main-btn").value
+      // let emailInput = document.getElementById("email").value
+      // let passInput = document.getElementById("password").value
+      // let mainButton = document.getElementById("main-btn").value
 
 
-      if (!emailInput) {
-        this.alertMaker("Email field is empty!")
-        return
-      } else if (emailInput.length < 3) {
-        this.alertMaker("Your email address is too short!")
-        return
-      } else if (!/[a-z0-9]+@[a-z]+.[a-z]{2,3}/.test(emailInput)) {
-        this.alertMaker("Please input correct email address!")
-        return
-      }
+      // if (!emailInput) {
+      //   this.alertMaker("Email field is empty!")
+      //   return
+      // } else if (emailInput.length < 3) {
+      //   this.alertMaker("Your email address is too short!")
+      //   return
+      // } else if (!/[a-z0-9]+@[a-z]+.[a-z]{2,3}/.test(emailInput)) {
+      //   this.alertMaker("Please input correct email address!")
+      //   return
+      // }
 
 
-      if (!passInput) {
-        this.alertMaker("Password field is empty!")
-        return
-      } else if (passInput.length < 6) {
-        this.alertMaker("Your password is too short!")
-        return
-      }
-
-      if (mainButton != "Login" && !confirmPassInput) {
-        this.alertMaker("Confirm your password!")
-        return
-      }
-
-      if (mainButton != "Login" && passInput != confirmPassInput) {
-        this.alertMaker("Passwords don't match!")
-        return;
-      }
+      // if (!passInput) {
+      //   this.alertMaker("Password field is empty!")
+      //   return
+      // } else if (passInput.length < 6) {
+      //   this.alertMaker("Your password is too short!")
+      //   return
+      // }
+      //
+      // if (mainButton != "Login" && !confirmPassInput) {
+      //   this.alertMaker("Confirm your password!")
+      //   return
+      // }
+      //
+      // if (mainButton != "Login" && passInput != document.getElementById("confirm-password").value) {
+      //   this.alertMaker("Passwords don't match!")
+      //   return;
+      // }
 
 
       this.authRequest()
@@ -130,17 +136,23 @@ export default {
     },
 
     async authRequest () {
-      let email = document.getElementById("email").value
+      let phoneNumber = document.getElementById("phoneNumber").value
       let password = document.getElementById("password").value
       let mainButton = document.getElementById("main-btn").value
+
+      if (mainButton == "Sign Up") {
+        var name = document.getElementById("firstName").value
+        var secName = document.getElementById("secondName").value
+        var prima = document.getElementById("patronymic").value
+      }
 
       document.getElementById("alert-msg").innerText = ""
 
       if (mainButton == "Login") {
-        await this.$store.dispatch("doLogin", {userEmail: email, userPassword: password})
+        await this.$store.dispatch("doLogin", {userPhoneNumber: phoneNumber, userPassword: password})
         this.getAuthStatus()
       } else {
-        await this.$store.dispatch("doRegister", {userEmail: email, userPassword: password})
+        await this.$store.dispatch("doRegister", {userPhoneNumber: phoneNumber, name: name, secName: secName, prima: prima, userPassword: password})
         this.changeAuthMode()
       }
       // Можно хранить в стейте роль пользователя чтобы выдавать админ права
@@ -150,7 +162,7 @@ export default {
       if (this.$store.getters.getUserAuthStatus === true) {
         this.authStatus = true
         this.$emit('changeParentAuthStatus')
-        document.getElementById("email").value = ""
+        document.getElementById("phoneNumber").value = ""
         document.getElementById("password").value = ""
         document.querySelector('.auth-popup').style.display = "none"
       } else {

@@ -28,13 +28,13 @@
                 @logOutUser="logOutUser"
                 @userOrdersListAction="isUserOrdersListVisible = !isUserOrdersListVisible"
             />
-            <div v-if="basketCounter !== 0" class="navbar__basket-counter">{{ basketCounter }}</div>
+<!--            <div v-if="basketCounter !== 0" class="navbar__basket-counter">{{ basketCounter }}</div>-->
             <li><router-link :to="{ path: `/`}">Home</router-link></li>
-            <li><router-link :to="{ path: `/products`}">Products</router-link></li>
-            <li><router-link :to="{ path: `/suppliers`}">Suppliers</router-link></li>
-            <li>
-              <img @click="isBasketPopUpVisible = true" class="navbar__basket" src="../assets/shopping-cart-icon.png" alt="#">
-            </li>
+            <li><router-link :to="{ path: `/products`}">Offenses</router-link></li>
+<!--            <li><router-link :to="{ path: `/suppliers`}">Suppliers</router-link></li>-->
+<!--            <li>-->
+<!--              <img @click="isBasketPopUpVisible = true" class="navbar__basket" src="../assets/shopping-cart-icon.png" alt="#">-->
+<!--            </li>-->
             <li>
               <img v-if="!parentAuthStatus" @click="showAuthPopUp" class="navbar__log-out-icon" src="../assets/loggin_icon.png" alt="#">
               <img v-if="parentAuthStatus" @click="isDropDownMenuVisible = !isDropDownMenuVisible" class="navbar__user-icon" src="../assets/User_Icon.png" alt="#">

@@ -19,6 +19,7 @@ export default {
 <style lang="scss" scoped>
 
   .empty-item-block {
+    width: 100%;
     margin: 0 0 0 20px;
     padding-top: 141px;
     min-height: 300px;
