@@ -151,6 +151,8 @@ export default {
       if (mainButton == "Login") {
         await this.$store.dispatch("doLogin", {userPhoneNumber: phoneNumber, userPassword: password})
         this.getAuthStatus()
+        // await this.$store.dispatch('getAllUserOffensesByUserId', {userId: localStorage.getItem("user_id")})
+        this.$router.go()
       } else {
         await this.$store.dispatch("doRegister", {userPhoneNumber: phoneNumber, name: name, secName: secName, prima: prima, userPassword: password})
         this.changeAuthMode()
